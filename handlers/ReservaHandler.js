@@ -5,6 +5,8 @@ const {
     updateReserva
 } = require("../controllers/reservaController")
 const { getIo } = require("../sockets");
+
+
     const io = getIo();
     io.on("reservas:crear", async ({ fecha, hora_inicio, hora_fin, costo }) => {
         //validaciones
