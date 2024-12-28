@@ -2,7 +2,7 @@ const { Factura } = require("../db_connection");
 
 const createFactura = async ({ fecha_emision, monto_total, state }) => {
     try {
-        const response = await Factura.create({ id_pago, fecha_emision, monto_total, state });
+        const response = await Factura.create({  fecha_emision, monto_total, state });
         return response || null;
     } catch (error) {
         console.error("Error al crear la Factura", error);

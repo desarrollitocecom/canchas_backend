@@ -1,8 +1,8 @@
 const { Pago } = require("../db_connection");
 
-const createPago = async ({ id_reserva, monto, state, metodo_pago, fecha_pago }) => {
+const createPago = async ({  monto, state, metodo_pago, fecha_pago }) => {
     try {
-        const response = await Pago.create({ id_reserva, monto, state, metodo_pago, fecha_pago });
+        const response = await Pago.create({ monto, state, metodo_pago, fecha_pago });
         return response || null;
     } catch (error) {
         console.error("Error al crear el Pago", error);
