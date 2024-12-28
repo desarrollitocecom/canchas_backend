@@ -7,7 +7,12 @@ const userSockets = new Map();
 let io; // Declaramos io como variable global en este módulo
 
 function initializeSocket(server) {
-    io = socketIo(server);
+    io = socketIo(server, {
+        cors: {
+          origin: "*", // Cambia "" por tu dominio permitido, por ejemplo, "http://localhost:3000"
+          methods: ["GET", "POST"],
+        },
+      });
 
     io.on("connection", (socket) => {
         console.log(`Nuevo cliente conectado: ${socket.id}`);
@@ -30,5 +35,13 @@ function initializeSocket(server) {
         });
     });
 }
-
-module.exports = { initializeSocket, userSockets };
+function getIo() {
+    if (!io) {
+      throw new Error(
+        "Socket.io no está inicializado. Llama a initializeSocket primero."
+      );
+    }
+    return io;
+  }
+  
+module.exports = { initializeSocket, userSockets,getIo };
