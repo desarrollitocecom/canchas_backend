@@ -1,55 +1,46 @@
 const { DataTypes } = require("sequelize");
 module.exports=(sequelize)=>{
-    const Reserva=sequelize.define('Reserva',{
+    const Pago=sequelize.define('Pago',{
         id: {
             type: DataTypes.UUID,
             primaryKey: true,
             defaultValue: DataTypes.UUIDV4,
         },
-        nro_descargo:{
-          type:DataTypes.STRING,
+        id_reserva:{
+          type:DataTypes.UUID,
+          references: {
+            model: 'Reservas',
+            key: 'id',
+        },
+        allowNull: true
+        },
+        
+        monto:{
+          type:DataTypes.FLOAT,
           allowNull: true
         },
         
-        fecha_descargo:{
-          type:DataTypes.DATE,
-          allowNull: true
-        },
-        
-        documento:{
-            type:DataTypes.STRING,
+        state:{
+            type:DataTypes.BOOLEAN,
             allowNull: true
         },
 
-        id_estado:{
-            type: DataTypes.INTEGER,
-            references: {
-                model: 'EstadoDescargoNCs',
-                key: 'id',
-            },
+        metodo_pago:{
+            type: DataTypes.STRING,
+           
             allowNull: true
         },
 
-        id_analista1:{
-            type: DataTypes.UUID,
-            references: {
-                model: 'Usuarios',
-                key: 'id',
-            },
+       fecha_pago:{
+            type: DataTypes.DATEONLY,
+          
             allowNull: true
         },
     }, {
-        tableName: 'Reservas',
+        tableName: 'Pagos',
         timestamps: true
     });
-
-
-    // DescargoNC.associate = (db) => {
-    //     DescargoNC.belongsTo(db.EstadoDescargoNC, { foreignKey: 'id_estado', as: 'estadoDescargoNC' });
-    //     DescargoNC.belongsTo(db.Usuario, { foreignKey: 'id_analista1', as: 'analistaUsuario' })
-    // };
-
     
-    return Reserva;
+    return Pago;
 }
 

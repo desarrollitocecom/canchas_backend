@@ -22,24 +22,26 @@ module.exports = (sequelize) => {
         //     },
         //     allowNull: true
         // },
-        // id_pago: {
-        //     type: DataTypes.STRING,
-        //     references: {
-        //         model: 'Pagos',
-        //         key: 'id',
-        //     },         
-        //     allowNull: true
-        // },
+        id_pago: {
+            type: DataTypes.UUID,
+            references: {
+                model: 'Pagos',
+                key: 'id',
+            },         
+            allowNull: true,
+            unique:true
+
+        },
         fecha: {
-            type: DataTypes.DATE,
+            type: DataTypes.DATEONLY,
             allowNull: true
         },
         hora_inicio: {
-            type: DataTypes.STRING,
+            type: DataTypes.TIME,
             allowNull: true
         },
         hora_fin: {
-            type: DataTypes.STRING,
+            type: DataTypes.TIME,
             allowNull: true
         },
         costo: {
@@ -52,10 +54,12 @@ module.exports = (sequelize) => {
     });
 
 
-    // DescargoNC.associate = (db) => {
-    //     DescargoNC.belongsTo(db.EstadoDescargoNC, { foreignKey: 'id_estado', as: 'estadoDescargoNC' });
-    //     DescargoNC.belongsTo(db.Usuario, { foreignKey: 'id_analista1', as: 'analistaUsuario' })
-    // };
+    Reserva.associate = (db) => {
+      //  Reserva.belongsTo(db.UnidadDeportivas, { foreignKey: 'id_unidad_deportiva', as: 'UnidadesDeportivas' });
+        Reserva.belongsTo(db.Pago, { foreignKey: 'id_pago', as: 'pago' })
+       // Reserva.belongsTo(db.Usuario, { foreignKey: 'id_usuario', as: 'Usuarios' })
+
+    };
 
 
     return Reserva;
