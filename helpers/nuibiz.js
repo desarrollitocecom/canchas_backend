@@ -1,37 +1,72 @@
 const axios = require('axios');
 
-// URL base de la API de Nuibiz en el entorno de pruebas
+// URLs base de la API
 const BASE_URL = 'https://apisandbox.vnforappstest.com/api.security/v1/';
+const ECOMMERCE_URL = 'https://apisandbox.vnforappstest.com/api.ecommerce/v2/ecommerce/token/session/';
+const merchantID = 456879852;
 
-// Tu nombre de usuario y contraseña de Nuibiz
-const userName = 'integraciones@niubiz.com.pe';  // Sustituye con tu nombre de usuario
-const password = '_7z3@8fF';    // Sustituye con tu contraseña
+// Credenciales de Nuibiz
+const userName = 'integraciones@niubiz.com.pe';
+const password = '_7z3@8fF';
 
-// Codificar las credenciales en Base64
+// Codificar credenciales en Base64
 const encodedCredentials = Buffer.from(`${userName}:${password}`).toString('base64');
-console.log('Encoded Credentials:', encodedCredentials);
 
-// Configuración de las cabeceras con la autenticación básica
+// Configuración inicial de cabeceras
 const config = {
   headers: {
-    'Authorization': `Basic ${encodedCredentials}`,
-    'Content-Type': 'application/json'
-  }
+    Authorization: `Basic ${encodedCredentials}`,
+    'Content-Type': 'application/json',
+  },
 };
 
-// Función para obtener la información de seguridad
+// Función para obtener información de seguridad
 async function getSecurityInfo() {
   try {
+    // Solicitar token de seguridad
     const response = await axios.get(`${BASE_URL}security`, config);
-    console.log('Respuesta de la API:', response.data);
+    const token = response.data;
+
+    if (token) {
+      console.log('Token obtenido:', token);
+
+      // Configurar cabeceras para la segunda solicitud
+      const sessionHeaders = {
+        headers: {
+          Authorization: token,
+          'Content-Type': 'application/json'
+        },
+      };
+    //  console.log("SESION DE HEADER",sessionHeaders);
+      
+
+      // Datos para la solicitud POST
+      const data = {
+        channel: 'web',
+        amount: 10.5,
+        antifraud: {
+          clientIp: '24.252.107.29',
+          merchantDefineData: {
+            MDD4: 'integraciones@niubiz.com.pe',
+            MDD32: 'JD1892639123',
+            MDD75: 'Registrado',
+            MDD77: 458,
+          },
+        }
+      };
+
+      // Solicitar token de sesión
+      const sessionResponse = await axios.post(`${ECOMMERCE_URL}${merchantID}`, data, sessionHeaders);
+      console.log('Token de sesión obtenido:', sessionResponse.data.sessionKey);
+    }
   } catch (error) {
     if (error.response) {
-      console.error('Error al obtener la información de seguridad:', error.response.status, error.response.data);
+      console.error('Error en la solicitud:', error.response.status, error.response.data);
     } else {
-      console.error('Error al obtener la información de seguridad:', error.message);
+      console.error('Error general:', error.message);
     }
   }
 }
 
-// Llamar a la función para obtener la información
+// Llamar a la función principal
 getSecurityInfo();
