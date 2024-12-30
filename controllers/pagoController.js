@@ -82,9 +82,10 @@ const tokendeSesion=async () => {
           'Content-Type': 'application/json'
         },
       };
+      //LA DATA DEL FRONT
       const data = {
         channel: 'web',
-        amount: 10.5,
+        amount: 90,
         antifraud: {
           clientIp: '24.252.107.29',
           merchantDefineData: {
@@ -99,7 +100,7 @@ const tokendeSesion=async () => {
       
       try {
           const sessionResponse = await axios.post(`${ECOMMERCE_URL}${merchantID}`, data, sessionHeaders);
-          
+
           console.log('Token de sesión obtenido:', sessionResponse.data.sessionKey);
 
           return sessionResponse.data || null
@@ -110,6 +111,37 @@ const tokendeSesion=async () => {
             console.error('Error general:', error.message);
           }
       }
+}
+const capturarPago=async (token) => {
+    
+    try {
+        const sessionHeaders = {
+            headers: {
+              Authorization: await getTokenNuibiz(),
+              'Content-Type': 'application/json'
+            },
+          };
+          const requestBody = {
+            "channel": "web",
+            "captureType": "manual",
+            "countable": true,
+            "order": {
+                "tokenId": token.transactionToken, // Usar el tokenId del parámetro token
+                "purchaseNumber": 2020100901, // El número de compra debe ser proporcionado por el token
+                "amount": 90, // Monto de la transacción
+                "currency": "PEN"// Tipo de moneda (por ejemplo, PEN)
+            }
+        };
+        const response=await axios.post(`${URL_TRANSACCION}${merchantID}`,
+            requestBody,
+            sessionHeaders 
+        )
+
+        console.log("Pago capturado con éxito:", response.data);
+    } catch (error) {
+        // Manejar cualquier error que ocurra durante la llamada a la API
+        console.error("Error al capturar el pago:", error.response ? error.response.data : error.message);
+    }
 }
 module.exports = {
     createPago,

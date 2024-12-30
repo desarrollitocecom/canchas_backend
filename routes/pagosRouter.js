@@ -1,10 +1,10 @@
 const { Router } = require('express');
 const router = Router();
 
-const { traerToken } = require('../handlers/pagoHandler');
+const { traerToken,respuestadeNuibiz } = require('../handlers/pagoHandler');
 
 
 router.get('/obtenerToken', traerToken);
-
+router.post('/paginaRespuesta',respuestadeNuibiz)
 
 module.exports = router;

@@ -10,8 +10,9 @@ const { initializeSocket, userSockets } = require("./sockets");
 const cors = require("cors");
 
 const app = express();
-app.use(cors());
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(cors());
 //app.use("/login", usuariosRouter); // no aplica authMiddleware para el manejo de usuarios
 //app.use(loginMiddleware); // usa el middleware globalmente para validar todas las rutas a las que se va a acceder en el sistema solo estando logeado
 const server = http.createServer(app); // servidor http a partir de express
