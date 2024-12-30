@@ -10,7 +10,9 @@ const sexoRutas = require('./sexoRutas');
 router.use('/funciones', funcionRutas);
 router.use('/sexos', sexoRutas);
 */
+const usuariosRouter = require("./usuarioRouter");
 
+router.use('/users', usuariosRouter);
 
 
 module.exports = router;
