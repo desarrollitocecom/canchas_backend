@@ -1,16 +1,11 @@
+require("dotenv").config();
+const {BASE_URL,PASSWORD_NUIBIZ,USER_NUIBIZ,ECOMMERCE_URL,merchantID} = process.env;
 const axios = require('axios');
-
-// URLs base de la API
-const BASE_URL = 'https://apisandbox.vnforappstest.com/api.security/v1/';
-const ECOMMERCE_URL = 'https://apisandbox.vnforappstest.com/api.ecommerce/v2/ecommerce/token/session/';
-const merchantID = 456879852;
-
-// Credenciales de Nuibiz
-const userName = 'integraciones@niubiz.com.pe';
-const password = '_7z3@8fF';
+console.log(BASE_URL,USER_NUIBIZ);
 
 // Codificar credenciales en Base64
-const encodedCredentials = Buffer.from(`${userName}:${password}`).toString('base64');
+const encodedCredentials = Buffer.from(`${USER_NUIBIZ}:${PASSWORD_NUIBIZ}`).toString('base64');
+
 
 // Configuración inicial de cabeceras
 const config = {
@@ -37,8 +32,8 @@ async function getSecurityInfo() {
           'Content-Type': 'application/json'
         },
       };
-    //  console.log("SESION DE HEADER",sessionHeaders);
-      
+      //  console.log("SESION DE HEADER",sessionHeaders);
+
 
       // Datos para la solicitud POST
       const data = {
