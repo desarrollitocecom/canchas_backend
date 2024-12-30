@@ -1,15 +1,13 @@
 const { Router } = require("express");
 const router = Router();
 
-/*
-const funcionRutas = require("./funcionRutas");
-const sexoRutas = require('./sexoRutas');
+
+const pagoRutas = require("./pagosRouter");
+
 
 // Usa prefijos para organizar las rutas
 
-router.use('/funciones', funcionRutas);
-router.use('/sexos', sexoRutas);
-*/
+router.use('/pagos', pagoRutas);
 
 
 
