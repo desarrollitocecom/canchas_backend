@@ -1,7 +1,7 @@
 require("dotenv").config({path:"../.env"});
 const {BASE_URL,PASSWORD_NUIBIZ,USER_NUIBIZ,ECOMMERCE_URL,merchantID} = process.env;
 const axios = require('axios');
-console.log(BASE_URL,USER_NUIBIZ);
+console.log(BASE_URL,USER_NUIBIZ,PASSWORD_NUIBIZ,PORT_CANCHAS);
 
 // Codificar credenciales en Base64
 const encodedCredentials = Buffer.from(`${USER_NUIBIZ}:${PASSWORD_NUIBIZ}`).toString('base64');
