@@ -1,5 +1,5 @@
 require("dotenv").config({path:"../.env"});
-const {BASE_URL,PASSWORD_NUIBIZ,USER_NUIBIZ,ECOMMERCE_URL,merchantID} = process.env;
+const {BASE_URL,PASSWORD_NUIBIZ,USER_NUIBIZ,ECOMMERCE_URL,merchantID,URL_TRANSACCION} = process.env;
 const axios = require('axios');
 
 const { Pago } = require("../db_connection");
@@ -126,7 +126,7 @@ const capturarPago=async (token) => {
             "captureType": "manual",
             "countable": true,
             "order": {
-                "tokenId": token.transactionToken, // Usar el tokenId del parámetro token
+                "tokenId": token, // Usar el tokenId del parámetro token
                 "purchaseNumber": 2020100901, // El número de compra debe ser proporcionado por el token
                 "amount": 90, // Monto de la transacción
                 "currency": "PEN"// Tipo de moneda (por ejemplo, PEN)
@@ -137,7 +137,7 @@ const capturarPago=async (token) => {
             sessionHeaders 
         )
 
-        console.log("Pago capturado con éxito:", response.data);
+      return response || null
     } catch (error) {
         // Manejar cualquier error que ocurra durante la llamada a la API
         console.error("Error al capturar el pago:", error.response ? error.response.data : error.message);
@@ -149,5 +149,6 @@ module.exports = {
     getPago,
     getAllPagos,
     getTokenNuibiz,
-    tokendeSesion
+    tokendeSesion,
+    capturarPago
 };

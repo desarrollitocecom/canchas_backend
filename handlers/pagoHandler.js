@@ -5,7 +5,8 @@ const {
     getPago,
     getAllPagos,
     getTokenNuibiz,
-    tokendeSesion
+    tokendeSesion,
+    capturarPago
 }=require("../controllers/pagoController");
 const traerToken=async (req,res) => {
 
@@ -21,32 +22,28 @@ const respuestadeNuibiz = async (req, res) => {
     try {
         console.log("Datos recibidos en el webhook:", req.body);
 
-        // const { transactionCode, customerEmail, channel } = req.body;
-      
-        // if (!transactionCode || !customerEmail || !channel ) {
-        //     return res.status(400).json({
-        //         success: false,
-        //         message: "Faltan datos esenciales en la respuesta de Niubiz.",
-        //     });
-        // }
+        const transactionCode = req.body.transactionCode || req.body.transactionToken;
+        
+        const { customerEmail, channel } = req.body;
+        
 
-        // console.log("Datos validados:", { transactionCode, customerEmail, channel });
+       const response=await capturarPago(transactionCode);
 
-        // // Procesa la transacción aquí...
-        // return res.status(200).json({
-        //     success: true,
-        //     message: "Transacción procesada con éxito.",
-        // });
+        // Procesa la transacción aquí...
+        return res.status(200).json({
+            success: true,
+            message: "Transacción procesada con éxito.",
+            data:response.data
+        });
     } catch (error) {
-        // console.error("Error procesando respuesta de Niubiz:", error);
+        console.error("Error procesando respuesta de Niubiz:", error);
 
-        // return res.status(500).json({
-        //     success: false,
-        //     message: "Error interno al procesar la respuesta de Niubiz.",
-        // });
+        return res.status(500).json({
+            success: false,
+            message: "Error interno al procesar la respuesta de Niubiz.",
+        });
     }
 };
-
 
 module.exports={
     traerToken,
