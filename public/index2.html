@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nuibiz Payment Response</title>
+</head>
+<body>
+    <h1>PAGO CORRECTO</h1>
+    <pre id="responseData"></pre> <!-- Para mostrar los datos de la respuesta -->
+
+    <script type="text/javascript">
+        // Obtener los datos de localStorage
+        const response = localStorage.getItem('visanetResponse');
+
+        if (response) {
+            // Mostrar los datos en pantalla
+            document.getElementById('responseData').textContent = JSON.stringify(JSON.parse(response), null, 2);
+        } else {
+            document.getElementById('responseData').textContent = 'No se encontraron datos de la transacción.';
+        }
+    </script>
+</body>
+</html>

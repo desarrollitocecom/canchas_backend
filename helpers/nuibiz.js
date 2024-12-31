@@ -1,6 +1,5 @@
 require("dotenv").config({path:"../.env"});
-console.log("process.env:", process.env);
-const {BASE_URL,PASSWORD_NUIBIZ,USER_NUIBIZ,ECOMMERCE_URL,merchantID,PORT_CANCHAS} = process.env;
+const {BASE_URL,PASSWORD_NUIBIZ,USER_NUIBIZ,ECOMMERCE_URL,merchantID} = process.env;
 const axios = require('axios');
 console.log(BASE_URL,USER_NUIBIZ,PASSWORD_NUIBIZ,PORT_CANCHAS);
 

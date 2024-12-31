@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nuibiz Payment</title>
+</head>
+<body>
+    <div>
+        <button onclick="openForm();">Pagar</button>
+    </div>
+
+    <script type="text/javascript" src="https://static-content-qas.vnforapps.com/v2/js/checkout.js"></script>
+    <script type="text/javascript">
+        let sessionToken = '';
+
+        (async function fetchToken() {
+            try {
+                const response = await fetch("http://localhost:3003/pagos/obtenerToken");
+                const result = await response.json();
+                sessionToken = result.data.sessionKey;
+                console.log("Token obtenido:", sessionToken);
+            } catch (error) {
+                console.error("Error fetching token:", error);
+            }
+        })();
+
+        function openForm() {
+            if (!sessionToken) {
+                alert("El token no está disponible. Por favor, intenta de nuevo más tarde.");
+                return;
+            }
+
+            VisanetCheckout.configure({
+                sessiontoken: sessionToken,
+                channel: 'web',
+                merchantid: '456879852',
+                purchasenumber: 2020100901,
+                amount: 90,
+                expirationminutes: '20',
+                timeouturl: 'about:blank',
+                merchantlogo: 'img/comercio.png',
+                formbuttoncolor: '#000000',
+                action: 'http://localhost:3003/pagos/paginaRespuesta',
+                method:'POST',
+                beforeRedirect: (e) => {
+                    alert(JSON.stringify(params));
+                
+                },
+                complete: function(params) {
+                    alert(JSON.stringify(params));
+                   
+                    console.log("Respuesta completa de Visanet:", params);
+                   
+                    localStorage.setItem('visanetResponse', JSON.stringify(params)); // Guardar datos en localStorage
+                }
+            });
+            VisanetCheckout.open();
+        }
+    </script>
+</body>
+</html>

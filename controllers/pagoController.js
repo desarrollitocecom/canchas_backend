@@ -1,3 +1,7 @@
+require("dotenv").config({path:"../.env"});
+const {BASE_URL,PASSWORD_NUIBIZ,USER_NUIBIZ,ECOMMERCE_URL,merchantID} = process.env;
+const axios = require('axios');
+
 const { Pago } = require("../db_connection");
 
 const createPago = async ({  monto, state, metodo_pago, fecha_pago }) => {
@@ -50,10 +54,100 @@ const getAllPagos = async (page = 1, limit = 20) => {
         return false;
     }
 };
+//obtengo el token de nuibiz
+const getTokenNuibiz=async () => {
 
+const encodedCredentials = Buffer.from(`${USER_NUIBIZ}:${PASSWORD_NUIBIZ}`).toString('base64');
+
+const config = {
+  headers: {
+    Authorization: `Basic ${encodedCredentials}`,
+    'Content-Type': 'application/json',
+  },
+};
+    try {
+         const response = await axios.get(`${BASE_URL}security`, config);
+         const token = response.data;
+        return token || null
+    } catch (error) {
+        console.error("No se pudo obtener el token de nuibiz");
+        return false
+    }
+}
+//
+const tokendeSesion=async () => {
+    const sessionHeaders = {
+        headers: {
+          Authorization: await getTokenNuibiz(),
+          'Content-Type': 'application/json'
+        },
+      };
+      //LA DATA DEL FRONT
+      const data = {
+        channel: 'web',
+        amount: 90,
+        antifraud: {
+          clientIp: '24.252.107.29',
+          merchantDefineData: {
+            MDD4: 'integraciones@niubiz.com.pe',
+            MDD32: 'JD1892639123',
+            MDD75: 'Registrado',
+            MDD77: 458,
+          },
+        }
+      };
+
+      
+      try {
+          const sessionResponse = await axios.post(`${ECOMMERCE_URL}${merchantID}`, data, sessionHeaders);
+
+          console.log('Token de sesión obtenido:', sessionResponse.data.sessionKey);
+
+          return sessionResponse.data || null
+      } catch (error) {
+        if (error.response) {
+            console.error('Error en la solicitud:', error.response.status, error.response.data);
+          } else {
+            console.error('Error general:', error.message);
+          }
+      }
+}
+const capturarPago=async (token) => {
+    
+    try {
+        const sessionHeaders = {
+            headers: {
+              Authorization: await getTokenNuibiz(),
+              'Content-Type': 'application/json'
+            },
+          };
+          const requestBody = {
+            "channel": "web",
+            "captureType": "manual",
+            "countable": true,
+            "order": {
+                "tokenId": token.transactionToken, // Usar el tokenId del parámetro token
+                "purchaseNumber": 2020100901, // El número de compra debe ser proporcionado por el token
+                "amount": 90, // Monto de la transacción
+                "currency": "PEN"// Tipo de moneda (por ejemplo, PEN)
+            }
+        };
+        const response=await axios.post(`${URL_TRANSACCION}${merchantID}`,
+            requestBody,
+            sessionHeaders 
+        )
+
+        console.log("Pago capturado con éxito:", response.data);
+    } catch (error) {
+        // Manejar cualquier error que ocurra durante la llamada a la API
+        console.error("Error al capturar el pago:", error.response ? error.response.data : error.message);
+    }
+}
 module.exports = {
     createPago,
     updatePago,
     getPago,
     getAllPagos,
+    getTokenNuibiz,
+    tokendeSesion
 };
